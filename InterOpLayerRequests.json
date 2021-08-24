@@ -1,0 +1,302 @@
+{
+  "version": 6,
+  "entities": [
+    {
+      "entity": {
+        "type": "Project",
+        "id": "eb61a4f9-ac2d-4bd5-afd1-6b9ccf54de3c",
+        "name": "mappingservice"
+      },
+      "children": [
+        {
+          "entity": {
+            "type": "Request",
+            "method": {
+              "requestBody": true,
+              "link": "http://tools.ietf.org/html/rfc7231#section-4.3.3",
+              "name": "POST"
+            },
+            "body": {
+              "formBody": {
+                "overrideContentType": true,
+                "encoding": "application/x-www-form-urlencoded",
+                "items": []
+              },
+              "bodyType": "Text",
+              "textBody": "{\n\t\"id\": \"booking1\",\n\t\"type\": \"Day Ticket\",\n\t\"connection\": {\n\t\t\"type\": \"BusService\",\n\t\t\"value\": {\n\t\t\t\"line\": \"124\",\n\t\t\t\"from\": \"SaarVV-Uni-Campus\",\n\t\t\t\"to\": \"SaarVV-Hauptbahnhof\"\n\t\t},\n\t\t\"validity\" : {\n\t\t\t\"from\": \"2019-10-01T08:00:00\",\n\t\t\t\"to\":\t\"2019-10-02T08:00:00\"\n\t\t}\n\t}\n}"
+            },
+            "uri": {
+              "query": {
+                "delimiter": "&",
+                "items": [
+                  {
+                    "enabled": true,
+                    "name": "targetService",
+                    "value": "SmartMaaSTicketservice"
+                  },
+                  {
+                    "enabled": true,
+                    "name": "mappingFileName",
+                    "value": "coachservice_json_mapping.ttl"
+                  }
+                ]
+              },
+              "scheme": {
+                "name": "http",
+                "version": "V11"
+              },
+              "host": "localhost:8090",
+              "path": "/ticket"
+            },
+            "id": "7c897d02-5217-4a46-b572-6d8f916d67fd",
+            "name": "GetTicketFromJSON",
+            "headers": [
+              {
+                "enabled": true,
+                "name": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "enabled": true,
+                "name": "Accept",
+                "value": "image/png"
+              }
+            ]
+          }
+        },
+        {
+          "entity": {
+            "type": "Request",
+            "method": {
+              "requestBody": true,
+              "link": "http://tools.ietf.org/html/rfc7231#section-4.3.3",
+              "name": "POST"
+            },
+            "body": {
+              "formBody": {
+                "overrideContentType": true,
+                "encoding": "application/x-www-form-urlencoded",
+                "items": []
+              },
+              "bodyType": "Text",
+              "textBody": "@prefix sm: \t<http://www.smartmaas.de/sm-ns#> .\n@prefix tio:\t<http://purl.org/tio/ns#> .\n@prefix rdf: \t<http://www.w3.org/1999/02/22-rdf-syntax-ns#> .\n@prefix rdfs: \t<http://www.w3.org/2000/01/rdf-schema#> .\n@prefix time: \t<http://www.w3.org/2006/time#> .\n@prefix gr:     <http://purl.org/goodrelations/v1#> .\n\nsm:linie124 a tio:CoachService ;\n\ttio:from <http://resource.for/SaarVV_Uni_Campus> ;\n\ttio:to <http://resource.for/SaarVV_Hauptbahnhof> .\n\nsm:ticket1 a tio:TicketPlaceholder ;\n\trdfs:label \"Busticket von Universität zum Hauptbahnhof\"@de ;\n\ttio:accessTo sm:linie124 .\n\nsm:SaarVV gr:offers sm:offer1 .\n\nsm:offer1 a gr:offering ;\n\tgr:name \"Tagesticket\" ;\n\tgr:includes sm:ticket1 ;\n\tgr:validFrom \"2019-04-01T08:00:00\"^^xsd:dateTime ;\n\tgr:validThrough \"2019-04-02T08:00:00\"^^xsd:dateTime .\n"
+            },
+            "uri": {
+              "query": {
+                "delimiter": "&",
+                "items": [
+                  {
+                    "enabled": true,
+                    "name": "targetService",
+                    "value": "SmartMaaSTicketservice"
+                  }
+                ]
+              },
+              "scheme": {
+                "name": "http",
+                "version": "V11"
+              },
+              "host": "localhost:8090",
+              "path": "/ticket"
+            },
+            "id": "c9aa1a7d-394c-428f-bce4-6e6c0a831237",
+            "name": "GetTicketFromRDF",
+            "headers": [
+              {
+                "enabled": true,
+                "name": "Content-Type",
+                "value": "text/turtle"
+              },
+              {
+                "enabled": true,
+                "name": "Accept",
+                "value": "image/png"
+              }
+            ]
+          }
+        },
+        {
+          "entity": {
+            "type": "Request",
+            "method": {
+              "requestBody": true,
+              "link": "http://tools.ietf.org/html/rfc7231#section-4.3.3",
+              "name": "POST"
+            },
+            "body": {
+              "formBody": {
+                "overrideContentType": true,
+                "encoding": "application/x-www-form-urlencoded",
+                "items": []
+              },
+              "bodyType": "Text",
+              "textBody": "@prefix : <http://www.smart-maas.eu/#> .\n@prefix wsdl: <https://www.w3.org/ns/wsdl20-rdf#> .\n@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .\n\n:SmartMaaSServiceDescription a wsdl:Description .\n\n:SmartMaaSTicketservice a wsdl:service ;\n\twsdl:endpoint <http://localhost:8083/ticket> ;\n\t:hasTemplate <http://localhost:8801/serviceTemplate?filename=json_schema_template.json> .\n"
+            },
+            "uri": {
+              "query": {
+                "delimiter": "&",
+                "items": []
+              },
+              "scheme": {
+                "name": "http",
+                "version": "V11"
+              },
+              "host": "localhost:8090",
+              "path": "/serviceTemplate"
+            },
+            "id": "31469ca3-2e6f-4f21-a28f-f51f4a85ed2d",
+            "name": "RegisterService",
+            "headers": [
+              {
+                "enabled": true,
+                "name": "Content-Type",
+                "value": "text/turtle"
+              }
+            ]
+          }
+        },
+        {
+          "entity": {
+            "type": "Request",
+            "method": {
+              "requestBody": true,
+              "link": "http://tools.ietf.org/html/rfc7231#section-4.3.3",
+              "name": "POST"
+            },
+            "body": {
+              "formBody": {
+                "overrideContentType": true,
+                "encoding": "application/x-www-form-urlencoded",
+                "items": []
+              },
+              "bodyType": "Text"
+            },
+            "uri": {
+              "query": {
+                "delimiter": "&",
+                "items": [
+                  {
+                    "enabled": true,
+                    "name": "serviceURL",
+                    "value": "http://localhost:8121/mapToRDF"
+                  }
+                ]
+              },
+              "scheme": {
+                "name": "http",
+                "version": "V11"
+              },
+              "host": "localhost:8090",
+              "path": "/rmlService"
+            },
+            "id": "985b174f-d412-4d57-94c5-39020f886911",
+            "name": "SetRMLService",
+            "headers": [
+              {
+                "enabled": true,
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          }
+        },
+        {
+          "entity": {
+            "type": "Request",
+            "method": {
+              "requestBody": true,
+              "link": "http://tools.ietf.org/html/rfc7231#section-4.3.3",
+              "name": "POST"
+            },
+            "body": {
+              "formBody": {
+                "overrideContentType": true,
+                "encoding": "application/x-www-form-urlencoded",
+                "items": []
+              },
+              "bodyType": "Text",
+              "textBody": "{\n\t\"id\": \"booking1\",\n\t\"type\": \"Day Ticket\",\n\t\"connection\": {\n\t\t\"type\": \"BusService\",\n\t\t\"value\": {\n\t\t\t\"line\": \"124\",\n\t\t\t\"from\": \"SaarVV-Uni-Campus\",\n\t\t\t\"to\": \"SaarVV-Hauptbahnhof\"\n\t\t},\n\t\t\"validity\" : {\n\t\t\t\"from\": \"2019-10-01T08:00:00\",\n\t\t\t\"to\":\t\"2019-10-02T08:00:00\"\n\t\t}\n\t}\n}"
+            },
+            "uri": {
+              "query": {
+                "delimiter": "&",
+                "items": [
+                  {
+                    "enabled": true,
+                    "name": "mappingFile",
+                    "value": "coachservice_json_mapping.ttl"
+                  }
+                ]
+              },
+              "scheme": {
+                "name": "http",
+                "version": "V11"
+              },
+              "host": "localhost:8801",
+              "path": "/maptordf"
+            },
+            "id": "19ec3fa3-2a9e-4cab-bc77-0073a95706b7",
+            "name": "mapToJSON",
+            "headers": [
+              {
+                "enabled": true,
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          }
+        },
+        {
+          "entity": {
+            "type": "Request",
+            "method": {
+              "requestBody": true,
+              "link": "http://tools.ietf.org/html/rfc7231#section-4.3.3",
+              "name": "POST"
+            },
+            "body": {
+              "formBody": {
+                "overrideContentType": true,
+                "encoding": "application/x-www-form-urlencoded",
+                "items": []
+              },
+              "bodyType": "Text",
+              "textBody": "@prefix rr: <http://www.w3.org/ns/r2rml#>.\n@prefix pt: \t<http://www.public-transport-example.ex/ns#> .\n@prefix tio: <http://purl.org/tio/ns#> .\n@prefix rml: <http://semweb.mmlab.be/ns/rml#>.\n@prefix ql: <http://semweb.mmlab.be/ns/ql#>.\n@prefix transit: <http://vocab.org/transit/terms/>.\n@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.\n@prefix wgs84_pos: <http://www.w3.org/2003/01/geo/wgs84_pos#>.\n@prefix rdfs: \t<http://www.w3.org/2000/01/rdf-schema#> .\n@prefix carml: <http://carml.taxonic.com/carml/> .\n\n<#BusLineMapping>\n  rml:logicalSource [\n    rml:source [\n\t\ta carml:Stream ;\n\t] ;\n    rml:referenceFormulation ql:JSONPath;\n\trml:iterator \"$.connection.value.line\"\n  ];\n \n  rr:subjectMap [\n    rr:template \"http://www.public-transport-example.ex/ns#{$}\";\n    rr:class tio:CoachService\n  ];\n  \n   rr:predicateObjectMap [\n    rr:predicate tio:from;\n    rr:objectMap [\n      rml:reference \"$.connection.value.from\";\n      rr:datatype xsd:string\n      ]\n    ];\n\t\n\t rr:predicateObjectMap [\n    rr:predicate tio:to;\n    rr:objectMap [\n      rml:reference \"$.connection.value.to\";\n      rr:datatype xsd:string\n      ]\n    ].\n\n<#TicketTypeMapping>\n rml:logicalSource [\n    rml:source [\n\t\ta carml:Stream ;\n\t] ;\n    rml:referenceFormulation ql:JSONPath;\n\trml:iterator \"$\"\n  ];\n \n   rr:subjectMap [\n    rr:template \"http://www.public-transport-example.ex/ns#ticket1\";\n    rr:class tio:TicketPlaceholder\n  ];\n\n  rr:predicateObjectMap [\n    rr:predicate rdfs:label;\n    rr:objectMap [\n      rml:reference \"$.type\";\n      rr:datatype xsd:string\n      ]\n    ];\n\t\n\trr:predicateObjectMap [\n    rr:predicate tio:accessTo;\n    rr:objectMap [\n      rml:reference \"http://www.public-transport-example.ex/ns#{$.connection.value.line}\";\n      ]\n    ].\n<#OfferMapping>\n rml:logicalSource [\n    rml:source [\n\t\ta carml:Stream ;\n\t] ;\n    rml:referenceFormulation ql:JSONPath;\n\trml:iterator \"$\"\n  ];\n  rr:subjectMap [\n    rr:template \"http://www.public-transport-example.ex/ns#SaarVV\";\n    rr:class gr:offers\n  ];\n   rr:predicateObjectMap [\n    rr:predicate gr:name;\n    rr:object \"offer1\"\n\t].\n<#ConnectionMapping>\n rml:logicalSource [\n    rml:source [\n\t\ta carml:Stream ;\n\t] ;\n    rml:referenceFormulation ql:JSONPath;\n\trml:iterator \"$\"\n  ];\n\trr:subjectMap [\n    rr:template \"http://www.public-transport-example.ex/ns#offer1\";\n    rr:class gr:offering\n  ];\n  \n  rr:predicateObjectMap [\n    rr:predicate gr:name;\n    rr:objectMap [\n      rml:reference \"http://www.public-transport-example.ex/ns#{$.type}\";\n      rr:datatype xsd:string\n      ]\n\t];\n\t  \n\t  rr:predicateObjectMap [\n    rr:predicate gr:includes;\n    rr:objectMap [\n      rml:reference \"pt:ticket1\";\n      rr:datatype xsd:string\n      ]\n    ];\n\t\n\trr:predicateObjectMap [\n    rr:predicate gr:validFrom;\n    rr:objectMap [\n      rml:reference \"$.connection.validity.from\";\n      rr:datatype xsd:dateTime\n      ]\n    ];\n\t\n\trr:predicateObjectMap [\n    rr:predicate gr:validThrough;\n    rr:objectMap [\n      rml:reference \"$.connection.validity.to\";\n      rr:datatype xsd:dateTime\n      ]\n    ]."
+            },
+            "uri": {
+              "query": {
+                "delimiter": "&",
+                "items": [
+                  {
+                    "enabled": true,
+                    "name": "filename",
+                    "value": "coachservice_json_mapping.ttl"
+                  }
+                ]
+              },
+              "scheme": {
+                "name": "http",
+                "version": "V11"
+              },
+              "host": "localhost:8801",
+              "path": "/mappingfile"
+            },
+            "id": "31875645-d979-4b9e-8da5-4edda421f9a5",
+            "name": "registerMappingFile",
+            "headers": [
+              {
+                "enabled": true,
+                "name": "Content-Type",
+                "value": "text/turtle"
+              },
+              {
+                "name": "Accept",
+                "value": "text/turtle"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
